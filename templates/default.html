@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	{%block title%}{%endblock%}
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/default.css">
+</head>
+<body id="myFrame">
+	<nav class="sidebar" id="sidebar">
+		<div class="toggle" onclick="toggle_div()"></div>
+			<ul>
+				{%block nav%}
+				{%endblock%}
+			</ul>
+		</nav>
+		<script type="text/javascript">
+			function toggle_div() {
+				var element=document.getElementById('sidebar');
+				element.classList.toggle('active');
+			};
+		</script>
+		<script type="text/javascript">
+			{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+  				{%for message in messages%}
+  					alert({{message|tojson}});
+  				{%endfor%}
+  			{%endif%}	
+  			{% endwith %}
+		</script>
+	{% block body %}
+	{% endblock %}
+		<footer class="footer-distributed">
+
+				<div class="footer-left">
+
+					<h3>EXAM<span>Site</span></h3>
+					<p class="footer-company-name">EXAM site &copy; 2020</p>
+				</div>
+				<div class="footer-right">
+
+					<p class="footer-company-about">
+						<span>About the Project</span>
+					</p>
+
+				</div>
+
+			</footer>
+</body>
+</html>

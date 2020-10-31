@@ -1,0 +1,259 @@
+body {
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+img{
+	width: 10%;
+	height: 10%;
+}
+.footer-distributed{
+	display: none;
+}
+.one{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: url('white.jpg');
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+}
+.main{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top:0;
+	left:0;
+}
+.main div{
+	position: absolute;
+	display: block;
+}
+.main div:nth-child(1){
+	left: 20%;
+	animation: animate 15s linear infinite;
+	animation-delay: -7s;
+}
+.main div:nth-child(2){
+	left: 50%;
+	animation: animate 25s linear infinite;
+	animation-delay: -2s;
+}
+.main div:nth-child(3){
+	left: 70%;
+	animation: animate 18s linear infinite;
+	animation-delay: -3s;
+}
+.main div:nth-child(4){
+	left: 0%;
+	animation: animate 22s linear infinite;
+	animation-delay:-4s;
+}
+.main div:nth-child(5){
+	left: 85%;
+	animation: animate 25s linear infinite;
+	animation-delay:-6s;
+}
+.main div:nth-child(6){
+	left: 0%;
+	animation: animate 12s linear infinite;
+	animation-delay: -4s;
+}
+.main div:nth-child(7){
+	left: 15%;
+	animation: animate 11s linear infinite;
+	animation-delay: -4s;
+
+}
+.main div:nth-child(8){
+	left: 60%;
+	animation: animate 19s linear infinite;
+	animation-delay: -4s;
+}
+@keyframes animate{
+	0%{
+		opacity: 0;
+		top: -6%;
+		transform: translateX(20px) rotate(0deg);
+	}
+	10%{
+		opacity: 1;
+	}
+	20%{
+		transform: translateX(-20px) rotate(45deg);
+	}
+	40%{
+		transform: translateX(-20px) rotate(90deg);
+	}
+	60%{
+		transform: translateX(20px) rotate(135deg);
+	}
+	80%{
+		transform: translateX(-20px) rotate(180deg);
+	}
+	100%{
+		top:110%;
+		transform: translateX(-20px) rotate(225deg);
+	}
+}
+.set{
+	transform: scale(2) rotate(180deg);
+}
+.one .box{
+	position: relative;
+	left: 30%;
+	top:15%;
+	width:39%;
+	background:rgba(0,0,0,.7);
+	padding: 40px;
+	box-sizing: border-box;
+	box-shadow: 0 15px 25px rgba(0,0,0,.5);
+	border-radius: 10px;
+	height: 50%;
+}
+.box h2{
+	margin: 0 0 30px;
+	padding: 0;
+	color: #fff;
+	text-align: center;
+}
+.box .inputbox{
+	position: relative;
+}
+.box .inputbox input
+{
+	width: 100%;
+	padding: 10px 10px;
+	font-size: 16px;
+	margin-bottom:30px;
+	border:none;
+	background:transparent;
+	border-bottom: 1px solid #fff;
+	outline: none;
+	color: #d1d1e0;
+}
+.box .inputbox label{
+	position: absolute;
+	top: 0;
+	left: 0;
+	font-size: 16px;
+	padding: 10px;
+	color: #fff;
+	transition: .5s;
+
+}
+
+.box .inputbox input:valid ~label,
+.box .inputbox input:focus ~label,
+.box .inputbox input:hover ~label{
+	top: -32%;
+}
+.box input[type="submit"]{
+	background: transparent;
+	border:none;
+	outline: none;
+	color: #fff;
+	background:#4da6ff;
+	cursor:pointer;
+	border-radius: 5px;
+	padding: 2% 2% 2% 2%;
+}
+.pageinfo{
+	z-index: 2;
+	position: absolute;
+	transition: 2s;
+	animation: head 2s linear 1 forwards;
+}
+.pageinfo:hover{
+	letter-spacing: 5px;
+	transform: scaleX(0.5);
+}
+
+@keyframes head{
+	10%{
+		opacity: 0;
+		transform: translateX(0%);
+		color:  #ff3333;
+		font-size: 0%;
+	}
+	40%{
+		opacity: 0.4;
+		transform: translateX(10%); 
+		font-size: 100%;
+	}
+	100%{
+		opacity: 1;
+		transform: translateX(50%);
+		color: #ff6666;
+		font-size: 200%;
+	}
+}
+.one .lr{
+	position: absolute;
+	z-index: 3;
+	right: 10%;
+	font-size: 150%;
+	transition: 0.5s;
+	text-decoration: none;
+}
+.one .lr:hover{
+	letter-spacing: 3px;
+	transform: scaleX(1.25);
+}
+.title{
+	text-transform: uppercase;
+}
+@media only screen and (max-width: 600px){
+	.box .inputbox label{
+		font-size: 12px;
+	}
+}
+#loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 100;
+  width: 150px;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  display: block;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.sidebar{
+	display: none;
+}
+.one{
+	display: none;
+}
+@media only screen and (max-width: 768px) {
+  .box .inputbox input{
+  	font-size: 15px;
+  }
+  .box .title{
+  	font-size: 20px;
+  }
+  .one .box{
+  	left: 15%;
+  	width: 75%;
+  }
+  .pageinfo{
+  	visibility: hidden;
+  }
+}

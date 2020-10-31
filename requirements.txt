@@ -1,0 +1,10 @@
+Flask
+Flask-Session
+SQLAlchemy
+Pillow==7.1.2
+psycopg2-binary==2.8.5
+requests==2.23.0
+Werkzeug==0.16.0
+Wikipedia-API==0.5.4
+flask_sqlalchemy
+gunicorn
