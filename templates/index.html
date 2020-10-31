@@ -1,0 +1,79 @@
+{% extends "default.html" %}
+{% block title %}
+<title>{{info[0]}}</title>
+<link rel="stylesheet" type="text/css" href="../static/index.css">
+{% if info[0]=='register' %}
+	<style>
+		.one .box{
+			height: 60%;
+		}
+	</style>
+{%endif%}
+{%endblock%}
+{%block nav%}
+	<li><a href="{{url_for(info[3])}}">{{info[3]}}</a></li>
+{%endblock %}
+
+{%block body%}
+	<div id="loader"></div>
+<seciton class="one">
+	<h1 class="pageinfo">Exam Site</h1>
+	<a href="{{url_for(info[3])}}" class="lr">{{info[3]}}</a>
+	<div class="main">
+		<div><img src="../static/img1.png" alt="img1"></div>
+		<div><img src="../static/img2.png"></div>
+		<div><img src="../static/img3.png"></div>
+		<div><img src="../static/img4.png"></div>
+		<div><img src="../static/img1.png"></div>
+		<div><img src="../static/img2.png"></div>
+		<div><img src="../static/img4.png"></div>
+		<div><img src="../static/img3.png"></div>
+	</div>
+	<div class="main set">
+		<div><img src="../static/img1.png" alt="img1"></div>
+		<div><img src="../static/img2.png"></div>
+		<div><img src="../static/img3.png"></div>
+		<div><img src="../static/img4.png"></div>
+		<div><img src="../static/img1.png"></div>
+		<div><img src="../static/img2.png"></div>
+		<div><img src="../static/img4.png"></div>
+		<div><img src="../static/img3.png"></div>
+	</div>
+	<div class="box">
+		<h2 class="title">{{info[0]}}</h2>
+		<form action="{{url_for(info[0])}}" method="post" id="form">
+			<div class="inputbox">
+				<input type="text" name="name" required="">
+				<label>{{info[1]}}</label>
+			</div>
+			<div class="inputbox">
+				<input type="password" name="password" required="">
+				<label>{{info[2]}}</label>
+			</div>
+			{% if info[0]=='register' %}
+				<div class="inputbox">
+					<input type="email" name="email" required="">
+					<label>Your Email</label>	
+				</div>	
+			{%endif%}
+			<input type="submit" name="submit" value="Submit" id="submit btn">
+		</form>
+	</div>
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded',function(){
+			document.querySelector('#form').onsubmit =loader; 
+		})
+		document.getElementById("myFrame").onload = loader1;
+		function loader(){
+				document.querySelector('#loader').style.display="block";
+				document.querySelector('.one').style.display="none";
+				document.querySelector('.sidebar').style.display="none";
+			}
+		function loader1(){
+				document.querySelector('#loader').style.display="none";
+				document.querySelector('.one').style.display="block";
+				document.querySelector('.sidebar').style.display="block";
+			}	
+	</script>
+</seciton>	
+{%endblock%}
