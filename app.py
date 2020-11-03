@@ -253,7 +253,7 @@ def give_test():
 									duration = time_left
 									results = Student.query.filter_by(name=name,test_id=test_id).all()
 									marked_ans = {}
-									if results > 0:
+									if results is not None:
 										for row in results:
 											marked_ans[row.question_id] = row.ans
 										marked_ans = json.dumps(marked_ans)
