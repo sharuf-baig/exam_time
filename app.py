@@ -21,6 +21,7 @@ from coolname import generate_slug
 from datetime import timedelta, datetime
 import json
 import random
+from sqlalchemy import distinct
 #####################################
 app = Flask(__name__)
 app.secret_key= 'temtemp'
@@ -299,7 +300,7 @@ def test(testid):
 			if results is not None:
 				results.ans = ans
 			else:
-				temp=Student(name=name,test_id=testid,question_id=qid)
+				temp=Student(name=name,test_id=testid,question_id=qid,ans=ans)
 				db.session.add(temp)
 			db.session.commit()
 		elif flag=='time':
@@ -328,3 +329,61 @@ def random_gen():
 			random.Random(id).shuffle(nos)
 			return json.dumps(nos)
 
+@app.route('/<username>/<testid>')
+@is_logged
+def check_result(username, testid):
+	if username == session['username']:
+		results = Test.query.filter_by(test_id=testid).first()
+		if results is not None:
+			check = results.show_result
+			if check:
+				results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).filter(T_question.question_id==Student.question_id).all()
+				data = dict(results.__dict__); 
+				data.pop('_sa_instance_state', None)	
+				if data is not None:
+					return render_template('tests_result.html', results= data)
+			else:
+				flash('You are not authorized to check the result', 'danger')
+				return redirect(url_for('tests_given',username = username))
+	else:
+		return redirect(url_for('home'))
+
+def neg_marks(username,testid):
+	results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).filter(T_question.question_id==Student.question_id).all()
+	data = dict(results.__dict__); 
+	data.pop('_sa_instance_state', None)
+	sum=0.0
+	for i in range(results):
+		if(str(data[i]['ans']).upper() != '0'):
+			if(str(data[i]['ans']).upper() != str(data[i]['correct'])):
+				sum=sum-0.25*int(data[i]['marks'])
+			elif(str(data[i]['ans']).upper() == str(data[i]['correct'])):
+				sum+=int(data[i]['marks'])
+	return sum
+
+def totmarks(username,tests): 
+	for test in tests:
+		testid = test['test_id']
+		results=Test.query.filter_by(test_id=testid).first()
+		if results['neg']:
+			test['marks'] = neg_marks(username,testid) 
+
+		else:
+			results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).filter(T_question.question_id==Student.question_id).filter(T_question.c_ans==Student.ans).all()		
+			data = dict(results.__dict__); 
+			data.pop('_sa_instance_state', None)
+			if str(results['totalmks']) == 'None':
+				results['totalmks'] = 0
+			test['marks'] = results['totalmks']
+	return tests
+
+@app.route('/<username>/tests-given')
+@is_logged
+def tests_given(username):
+	if username == session['username']:
+		results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).distinct()
+		results=totmarks(username,results)
+		return render_template('tests_given.html', tests=results)
+	else:
+		flash('You are not authorized', 'danger')
+		return redirect(url_for('dashboard'))
