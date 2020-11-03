@@ -1,0 +1,41 @@
+{% extends 'default.html' %}
+
+{% block title %}
+  <link rel="stylesheet" href="https://bootswatch.com/4/lumen/bootstrap.min.css">
+{% endblock %}
+
+{% block body %}
+
+  <h1 align="center">Welcome {{session.user|upper}}</h1>
+ 
+
+<div class="jumbotron">
+  <table class="table table-hover">
+  <thead>
+
+    <tr>
+      <th scope="col">Subject</th>
+      <th scope="col">Title</th>
+      <th scope="col">Duration</th>
+      <th scope="col">Test timing</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    
+  
+
+
+    <{% for test in tests %}
+                <tr>
+                    <td>{{test['subject']}}</td>
+                    <td>{{test['topic']}}</td>
+                    <td>{{test['duration']/60}} min</td>
+                    <td>{{test['start']}}-{{test['end']}}</td>
+                    <td><a class="btn btn-primary" href="/{{session.user}}/{{test['test_id']}}/quiz">Take Quiz</a></td>
+                </tr>
+            {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

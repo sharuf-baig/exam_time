@@ -1,0 +1,2 @@
+export DATABASE_URL=postgres://zmzocxdwsvoluw:6928bda2c9c0070fe4aed18c82c1296cf1e234f3c9050240991bb1dd9eefbd24@ec2-54-158-190-214.compute-1.amazonaws.com:5432/d4et47dk6mrv4p
+export FLASK_DEBUG=1

@@ -185,3 +185,11 @@ def create_test():
 			return redirect(url_for('create_test'))
 		
 	return render_template('create_test.html' , form = form)
+@app.route('/give-test', methods = ['GET', 'POST'])
+@is_logged
+def give_test():
+
+	tests = Test.query.all()
+	
+	
+	return render_template('show_tests.html',tests=tests)	
