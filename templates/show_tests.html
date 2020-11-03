@@ -17,7 +17,8 @@
       <th scope="col">Subject</th>
       <th scope="col">Title</th>
       <th scope="col">Duration</th>
-      <th scope="col">Test timing</th>
+      <th scope="col">Test Start</th>
+      <th scope="col">Test End</th>
       <th scope="col"></th>
     </tr>
   </thead>
@@ -31,8 +32,9 @@
                     <td>{{test['subject']}}</td>
                     <td>{{test['topic']}}</td>
                     <td>{{test['duration']/60}} min</td>
-                    <td>{{test['start']}}-{{test['end']}}</td>
-                    <td><a class="btn btn-primary" href="/{{session.user}}/{{test['test_id']}}/quiz">Take Quiz</a></td>
+                    <td>{{test['start']}}</td>
+                    <td>{{test['end']}}</td>
+                    <td><a class="btn btn-primary" href="{{url_for('give_test',val=test.test_id)}}">Take Quiz</a></td>
                 </tr>
             {% endfor %}
   </tbody>

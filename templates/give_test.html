@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+  <link rel="stylesheet" href="static/give_test.css">
+{% endblock %}
+
+{% block body %}
+{% from "_formhelpers.html" import render_field %}
+<div class="container" align="center" id="login">
+  <div class="row">
+    <div class="col-sm">
+      <h1>Login</h1>
+    </div>
+  </div>
+  <div class="login-box well">
+  <form method="POST" action="">
+    <div class="form-group">
+      {{render_field(form.password, class="form-control")}}
+    </div>
+    <p><input type="submit" class="btn btn-primary" value="Submit"></p>
+  </form>
+</div>
+{% endblock %}

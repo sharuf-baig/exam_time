@@ -1,0 +1,33 @@
+
+.login-box{
+    width: 40%;
+    border: #6a63dd solid 5px;
+    border-radius: 0px 0px 20px 20px;
+ }
+
+ .form-group{
+
+    margin-top: 2%;
+    width: 75%;
+ 
+ }
+
+ .row{
+    border-radius: 20px 20px 0px 0px;
+    border: #6a63dd solid 5px;
+    width: 40%;
+    background-color: #6a63dd;
+    /*padding-top: 20%; */ 
+    margin-top: 10%;
+ }
+ 
+ .loginlink{
+
+    color: #6a63dd !important;
+ }
+ 
+ h1{
+    margin-top: 2%;
+    text-align: center;
+    color: white;
+ }

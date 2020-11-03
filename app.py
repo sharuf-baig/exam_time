@@ -1,5 +1,5 @@
 #importing all the required libraries
-from flask import Flask, session,request,render_template,redirect,flash,url_for
+from flask import Flask, session,request,render_template,redirect,flash,url_for,jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -19,6 +19,8 @@ from docx import Document
 from wtforms.validators import ValidationError
 from coolname import generate_slug
 from datetime import timedelta, datetime
+import json
+import random
 #####################################
 app = Flask(__name__)
 app.secret_key= 'temtemp'
@@ -57,6 +59,7 @@ def doctodict(filepath):
 		count+=1
  
 	return data
+
 class UploadForm(FlaskForm):
 	subject = StringField('Subject')
 	topic = StringField('Topic')
@@ -83,6 +86,9 @@ class UploadForm(FlaskForm):
 	def validate_start_date(form, field):
 		if datetime.strptime(str(form.start_date.data) + " " + str(form.start_time.data),"%Y-%m-%d %H:%M:%S") < datetime.now():
 			raise ValidationError("Start date and time must not be earlier than current")
+
+class TestForm(Form):
+	password = PasswordField('Test Password')
 
 #various routes for the website
 #login part
@@ -185,11 +191,140 @@ def create_test():
 			return redirect(url_for('create_test'))
 		
 	return render_template('create_test.html' , form = form)
-@app.route('/give-test', methods = ['GET', 'POST'])
+@app.route('/show-test', methods = ['GET', 'POST'])
+@is_logged
+def show_test():
+	tests = Test.query.all()
+	return render_template('show_tests.html',tests=tests)
+
+@app.route("/give-test", methods = ['GET', 'POST'])
 @is_logged
 def give_test():
+	global duration, marked_ans	
+	name=session['user']
+	form = TestForm(request.form)
+	val = request.args.get('val', None)
+	if request.method == 'POST' and form.validate():
+		test_id = val
+		if test_id is None:
+			return redirect(url_for('show_test'))
+		password_candidate = form.password.data
+		results = Test.query.filter_by(test_id=test_id).first()
+		if results is not None:
+			data = results
+			password = data.password
+			duration = data.duration
+			start = data.start
+			start = str(start)
+			end = data.end
+			end = str(end)
+			if password == password_candidate:
+				now = datetime.now()
+				now = now.strftime("%Y-%m-%d %H:%M:%S")
+				now = datetime.strptime(now,"%Y-%m-%d %H:%M:%S")
+				if datetime.strptime(start,"%Y-%m-%d %H:%M:%S") < now and datetime.strptime(end,"%Y-%m-%d %H:%M:%S") > now:
+					results = StudentTI.query.filter_by(name=name,test_id=test_id).first()
+					if results is not None:
+						is_completed = results.completed
+						if not is_completed:
+							time_left = results.time_left
+							if time_left <= duration:
+								duration = time_left
+								results = Student.query.filter_by(name=name,test_id=test_id).all()
+								marked_ans = {}
+								if results is not None:
+									for row in results:
+										marked_ans[row.question_id] = row.ans
+									marked_ans = json.dumps(marked_ans)
+									#return redirect(url_for('test' , testid = test_id))
+						else:
+							flash('Test already given', 'success')
+							return redirect(url_for('give_test',val=val))
+					else:
+						info = StudentTI(name=name,test_id=test_id,time_left=duration)	
+						db.session.add(info)
+						db.session.commit()
+						results = StudentTI.query.filter_by(name=name,test_id=test_id).first()
+						if results is not None:
+							is_completed = results.completed
+							if not is_completed:
+								time_left = results.time_left
+								if time_left <= duration:
+									duration = time_left
+									results = Student.query.filter_by(name=name,test_id=test_id).all()
+									marked_ans = {}
+									if results > 0:
+										for row in results:
+											marked_ans[row.question_id] = row.ans
+										marked_ans = json.dumps(marked_ans)
+				else:
+					if datetime.strptime(start,"%Y-%m-%d %H:%M:%S") > now:
+						flash(f'Test start time is {start}', 'danger')
+					else:
+						flash(f'Test has ended', 'danger')
+					return redirect(url_for('show_test'))
+				return redirect(url_for('test' , testid = test_id))
+			else:
+				flash('Invalid password', 'danger')
+				return redirect(url_for('give_test',val=val))
+		flash('Invalid testid', 'danger')
+		return redirect(url_for('give_test',val=val))
+	return render_template('give_test.html', form = form)
 
-	tests = Test.query.all()
-	
-	
-	return render_template('show_tests.html',tests=tests)	
+@app.route('/give-test/<testid>', methods=['GET','POST'])
+@is_logged
+def test(testid):
+	global duration,marked_ans
+	name = session['user']
+	if request.method == 'GET':
+		try:
+			data = {'duration': duration, 'marks': '', 'q': '', 'a': "", 'b':"",'c':"",'d':"" }
+			return render_template('quiz.html' ,**data, answers=marked_ans)
+		except:
+			return redirect(url_for('show_test'))
+	else:
+		flag = request.form['flag']
+		if flag == 'get':
+			num = request.form['no']
+			results = T_question.query.filter_by(test_id=testid,question_id=num).first()
+			if results is not None:
+				data = results
+				data = dict(results.__dict__); 
+				data.pop('_sa_instance_state', None)
+				return json.dumps(data)
+		elif flag=='mark':
+			qid = request.form['qid']
+			ans = request.form['ans']
+			results = Student.query.filter_by(name=name,test_id=testid,question_id=qid).first()
+			if results is not None:
+				results.ans = ans
+			else:
+				temp=Student(name=name,test_id=testid,question_id=qid)
+				db.session.add(temp)
+			db.session.commit()
+		elif flag=='time':
+			time_left = request.form['time']
+			try:
+				temp=StudentTI.query.filter_by(name=name,test_id=testid).first()
+				temp.time_left=time_left
+				db.session.commit()
+			except:
+				pass
+		else:
+			temp=StudentTI.query.filter_by(name=name,test_id=testid).first()
+			temp.completed = True
+			db.session.commit()
+			flash("Test submitted successfully", 'info')
+			return json.dumps({'sql':'fired'})
+
+@app.route('/randomize', methods = ['POST'])
+def random_gen():
+	if request.method == "POST":
+		id = request.form['id']
+		results = T_question.query.filter_by(test_id=id).count()
+		if results is not None:
+			total = results
+			nos = list(range(1,int(total)+1))
+			random.Random(id).shuffle(nos)
+			return json.dumps(nos)
+
