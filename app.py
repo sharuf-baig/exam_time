@@ -1,5 +1,5 @@
 #importing all the required libraries
-from flask import Flask, session,request,render_template,redirect,flash,url_for,jsonify
+from flask import Flask, session,request,render_template,redirect,flash,url_for,send_file
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -20,6 +20,7 @@ from wtforms.validators import ValidationError
 from coolname import generate_slug
 from datetime import timedelta, datetime
 import json
+import csv
 import random
 from sqlalchemy import distinct
 from sqlalchemy.sql import func
@@ -184,7 +185,7 @@ def create_test():
 			password = form.password.data
 			subject = form.subject.data
 			topic = form.topic.data
-			test=Test(test_id=test_id,start=start_date_time,end=end_date_time,duration=duration,show_result=show_result,password=password,subject=subject,topic=topic,neg=neg_mark)
+			test=Test(test_id=test_id,name=session['user'],start=start_date_time,end=end_date_time,duration=duration,show_result=show_result,password=password,subject=subject,topic=topic,neg=neg_mark)
 			db.session.add(test)
 			db.session.commit()
 			flash(f'Test ID: {test_id}', 'success')
@@ -336,7 +337,7 @@ def neg_marks(username,testid):
 	data=results
 	sum=0.0
 	for i in results:
-		if(str(i.marked) != ''):
+		if(str(i.marked) is not None):
 			if(str(i.marked).upper() != str(i.correct)):
 				sum=sum-0.25*int(i.marks)
 			elif(str(i.marked).upper() == str(i.correct)):
@@ -388,10 +389,72 @@ def check_result(username, testid):
 					group by explanation,question,a,b,c,d,marks,qid,correct,marked\
 					order by q.question_id asc', {'testid':testid,'username':username}).fetchall()
 				if results is not None:
-					return render_template('tests_result.html', results= results)
+					return render_template('tests_result.html', results= results,i=0)
 			else:
 				flash('You are not authorized to check the result', 'danger')
 				return redirect(url_for('tests_given',username = username))
 	else:
 		return redirect(url_for('home'))
 
+@app.route('/<username>/tests-created')
+@is_logged
+def tests_created(username):
+	if username == session['user']:
+		results = db2.execute('select * from test where name = :username', {"username":username}).fetchall()
+		return render_template('tests_created.html', tests=results)
+	else:
+		flash('You are not authorized', 'danger')
+		return redirect(url_for('home'))
+
+def marks_calc(username,testid):
+	if username == session['user']:
+		results=db2.execute("select neg from test where test_id=:testid",{"testid":testid}).fetchone()
+		if results['neg']:
+			return neg_marks(username,testid) 
+		else:
+			results = db2.execute("select sum(marks) as totalmks from students s,tquestions q where s.name=:name and s.test_id=:testid and s.question_id=q.question_id and s.test_id=q.test_id and s.ans=q.c_ans", {'name':username,'testid':testid}).fetchone()
+			if str(results['totalmks']) == 'None':
+				results['totalmks'] = 0
+			return results['totalmks']
+
+@app.route('/<username>/tests-created/<testid>', methods = ['POST','GET'])
+@is_logged
+def student_results(username, testid):
+	if username == session['user']:
+		results = db2.execute('select user_details.name as name,test_id from s_testinfo,user_details where test_id = :testid and completed =true and s_testinfo.name=user_details.name ',{"testid":testid}).fetchall()
+		final = []
+		temp = []
+		count = 1
+		for user in results:
+			score = marks_calc(user['name'], testid)
+			d=dict(user.items())
+			d['srno'] = count
+			d['marks'] = score
+			temp.append(d)
+			final.append([count, user['name'], score])
+			count+=1
+		if request.method =='GET':
+			results = temp
+			return render_template('student_results.html', data=results)
+		else:
+			fields = ['Sr No', 'Name', 'Marks']
+			with open('static/' + testid + '.csv', 'w') as f:
+				writer = csv.writer(f)
+				writer.writerow(fields)
+				writer.writerows(final)
+			return send_file('/static/' + testid + '.csv', as_attachment=True)
+
+@app.route('/<username>/tests-created/<testid>/questions', methods = ['POST','GET'])
+@is_logged
+def questions(username, testid):
+	if username == session['user']:
+		results = db2.execute('SELECT * FROM test where test_id = :testid',{"testid":testid}).fetchall()
+		if results is not None:
+			results = db2.execute('select explanation,question,a,b,c,d,marks,q.question_id as qid, \
+					q.c_ans as correct, s.ans as marked from tquestions q left join \
+					students s on  s.test_id = q.test_id and s.test_id =:testid \
+					and s.name =:username and s.question_id = q.question_id \
+					group by explanation,question,a,b,c,d,marks,qid,correct,marked\
+					order by q.question_id asc', {'testid':testid,'username':username}).fetchall()
+			if results is not None:
+				return render_template('disp_questions.html', results= results)

@@ -5,28 +5,20 @@
   <!-- if correct option -- green -->
 
   {% if result.correct|string() == opt|upper %}
-    {% if result.marked|string() == '0' %}
-    <td style="background-color: rgba(67,99,216,0.5);"> <b>{{opt|upper}}</b>. {{result[opt]}}</td>
-    {% else %}
-
-      <td style="background-color: rgba(0,255,0,0.4);"> <b>{{opt|upper}}</b>. {{result[opt]}}</td>
-    {% endif %}
-  {% else %} 
-      <!-- if incorrect option -- red -->
-        {% if result.marked|string()|upper == opt|upper %}
-            <td style="background-color: rgba(255,0,0,0.4);"><b>{{opt|upper}}</b>. {{result[opt]}}</td>
-        {% else %}
-            <td><b>{{opt|upper}}</b>. {{ result[opt] }}</td>
-        {% endif %}
+    <td style="background-color: rgba(0,255,0,0.4);"> <b>{{opt|upper}}</b>. {{result[opt]}}</td>
+  {% else %}
+    <td > <b>{{opt|upper}}</b>. {{result[opt]}}</td>
   {% endif %}
 {% endmacro %}
 
+
+<!-- diff color for nt attemptd -->
 
 {% block body %}
     {% for result in results%}
         <table style="margin-bottom: 40px;">
             <tr>
-                <td>Question No. {{loop.index}}</td>
+                <td>Question No. {{ result.qid }}</td>
                 <td>Marks: {{ result.marks }}</td>
             </tr>
             <tr>
@@ -44,6 +36,7 @@
             </tr>
             <tr>
                 <td colspan="2"><b>Explanation</b>:  {{result.explanation}} </td>
+    
             </tr>
         </table> 
     {% endfor %}
