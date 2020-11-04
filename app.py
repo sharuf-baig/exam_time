@@ -371,4 +371,27 @@ def tests_given(username):
 		return render_template('tests_given.html', tests=results)
 	else:
 		flash('You are not authorized', 'danger')
-		return redirect(url_for('dashboard'))
+		return redirect(url_for('home'))
+
+@app.route('/<username>/<testid>')
+@is_logged
+def check_result(username, testid):
+	if username == session['user']:
+		results = db2.execute('SELECT * FROM test where test_id = :testid',{"testid":testid}).fetchone()
+		if results is not None:
+			check = results['show_result']
+			if check:
+				results = db2.execute('select explanation,question,a,b,c,d,marks,q.question_id as qid, \
+					q.c_ans as correct, s.ans as marked from tquestions q left join \
+					students s on  s.test_id = q.test_id and s.test_id =:testid \
+					and s.name =:username and s.question_id = q.question_id \
+					group by explanation,question,a,b,c,d,marks,qid,correct,marked\
+					order by q.question_id asc', {'testid':testid,'username':username}).fetchall()
+				if results is not None:
+					return render_template('tests_result.html', results= results)
+			else:
+				flash('You are not authorized to check the result', 'danger')
+				return redirect(url_for('tests_given',username = username))
+	else:
+		return redirect(url_for('home'))
+
