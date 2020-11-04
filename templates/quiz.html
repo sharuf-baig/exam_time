@@ -3,6 +3,26 @@
 {% block body %}
 <script type="text/javascript"> var answers = "{{answers}}";</script>
 <div id="time">{{duration}}</div>
+
+<style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      position: absolute;
+    }
+  </style>
+<body>
+  <video id="video" width="720" height="560" autoplay muted></video>
+</body>
+<table>
 <table>
 <tr>
   <td id='queid'>Question No.</td>
@@ -45,6 +65,14 @@
     </ul>
   </div>
 </footer>
+
+  <script type="text/javascript" src={{url_for('static', filename='face-api.min.js')}}></script>
+
+<script type="text/javascript" src={{url_for('static', filename='procto.js')}}>
+
+</script>
+
+
 
 <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>

@@ -49,7 +49,7 @@ video.addEventListener('play', () => {
       alert("Make sure that no one is around you")
       cheat=cheat+1
     }
-    if(cheat>2){
+    if(cheat>5){
       document.getElementById('finish').click();
     }
     
