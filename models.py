@@ -3,14 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 class User(db.Model):
-    __tablename__ = "User_details"
+    __tablename__ = "user_details"
     id = db.Column(db.Integer,primary_key=True)
     name = db.Column(db.String,nullable=False)
     password = db.Column(db.String,nullable=False)
     email = db.Column(db.String,nullable=False)
 
 class T_question(db.Model):
-    __tabelname__ = "tquestions"
+    __tablename__ = "tquestions"
     test_id = db.Column(db.String,primary_key=True)
     question_id=db.Column(db.String,primary_key=True)
     question = db.Column(db.Text,nullable=False)
@@ -33,6 +33,7 @@ class Test(db.Model):
     subject=db.Column(db.String,nullable=False)
     topic=db.Column(db.String)
     neg=db.Column(db.Boolean,default=False)
+    name = db.Column(db.String,nullable=False)
 
 class StudentTI(db.Model):
     __tablename__ ='s_testinfo'
