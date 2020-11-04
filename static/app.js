@@ -8,6 +8,9 @@ const MARKED_BOOKMARKED=3;
 const SUBMITTED = 4;
 const SUBMITTED_BOOKMARKED = 5;
 
+window.onbeforeunload = function() {
+    return "Dude, are you sure you want to leave?!";
+}
 
 $(document).ready( function() {
     var url = window.location.href;

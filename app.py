@@ -22,6 +22,9 @@ from datetime import timedelta, datetime
 import json
 import random
 from sqlalchemy import distinct
+from sqlalchemy.sql import func
+engine = create_engine(os.getenv("DATABASE_URL")) # database engine object from SQLAlchemy that manages connections to the database                                                  # DATABASE_URL is an environment variable that indicates where the database lives
+db2 = scoped_session(sessionmaker(bind=engine))
 #####################################
 app = Flask(__name__)
 app.secret_key= 'temtemp'
@@ -187,7 +190,6 @@ def create_test():
 			flash(f'Test ID: {test_id}', 'success')
 			return redirect(url_for('home'))
 		except Exception as e:
-			print(e)
 			flash('Invalid Input File Format','danger')
 			return redirect(url_for('create_test'))
 		
@@ -329,59 +331,42 @@ def random_gen():
 			random.Random(id).shuffle(nos)
 			return json.dumps(nos)
 
-@app.route('/<username>/<testid>')
-@is_logged
-def check_result(username, testid):
-	if username == session['username']:
-		results = Test.query.filter_by(test_id=testid).first()
-		if results is not None:
-			check = results.show_result
-			if check:
-				results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).filter(T_question.question_id==Student.question_id).all()
-				data = dict(results.__dict__); 
-				data.pop('_sa_instance_state', None)	
-				if data is not None:
-					return render_template('tests_result.html', results= data)
-			else:
-				flash('You are not authorized to check the result', 'danger')
-				return redirect(url_for('tests_given',username = username))
-	else:
-		return redirect(url_for('home'))
-
 def neg_marks(username,testid):
-	results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).filter(T_question.question_id==Student.question_id).all()
-	data = dict(results.__dict__); 
-	data.pop('_sa_instance_state', None)
+	results =  db2.execute("select marks,q.question_id as qid,q.c_ans as correct, s.ans as marked from tquestions q left join students s on  s.test_id = q.test_id and s.test_id = :testid and s.name = :username and s.question_id = q.question_id group by qid,correct,marked,marks order by q.question_id asc",{"testid":testid,"username":username}).fetchall()
+	data=results
 	sum=0.0
-	for i in range(results):
-		if(str(data[i]['ans']).upper() != '0'):
-			if(str(data[i]['ans']).upper() != str(data[i]['correct'])):
-				sum=sum-0.25*int(data[i]['marks'])
-			elif(str(data[i]['ans']).upper() == str(data[i]['correct'])):
-				sum+=int(data[i]['marks'])
+	for i in results:
+		if(str(i.marked) != ''):
+			if(str(i.marked).upper() != str(i.correct)):
+				sum=sum-0.25*int(i.marks)
+			elif(str(i.marked).upper() == str(i.correct)):
+				sum+=int(i.marks)
 	return sum
 
 def totmarks(username,tests): 
+	temp = []
 	for test in tests:
 		testid = test['test_id']
-		results=Test.query.filter_by(test_id=testid).first()
+		d = dict(test.items())
+		results=db2.execute("select neg from test where test_id=:testid",{"testid":testid}).fetchone()
+		# print(f"res =={results['neg']}")
 		if results['neg']:
-			test['marks'] = neg_marks(username,testid) 
+			d['marks'] = neg_marks(username,testid) 
 
 		else:
-			results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).filter(T_question.question_id==Student.question_id).filter(T_question.c_ans==Student.ans).all()		
-			data = dict(results.__dict__); 
-			data.pop('_sa_instance_state', None)
-			if str(results['totalmks']) == 'None':
-				results['totalmks'] = 0
-			test['marks'] = results['totalmks']
-	return tests
+			results = db2.execute("select sum(marks) as totalmks from students s,tquestions q where s.name=:name and s.test_id=:testid and s.question_id=q.question_id and s.test_id=q.test_id and s.ans=q.c_ans",{"name":username,"testid":testid}).fetchone()	
+			if str(results.totalmks) == 'None':
+				results.totalmks = 0
+			d['marks'] = results.totalmks
+		temp.append(d)
+	print(temp)	
+	return temp
 
 @app.route('/<username>/tests-given')
 @is_logged
 def tests_given(username):
-	if username == session['username']:
-		results = db.session.query(T_question,Student).filter(T_question.test_id==Student.test_id).distinct()
+	if username == session['user']:
+		results = db2.execute('select distinct(students.test_id),subject,topic from students,test where students.name = :name and students.test_id=test.test_id',{"name":username}).fetchall()
 		results=totmarks(username,results)
 		return render_template('tests_given.html', tests=results)
 	else:

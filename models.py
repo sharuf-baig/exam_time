@@ -12,7 +12,7 @@ class User(db.Model):
 class T_question(db.Model):
     __tabelname__ = "tquestions"
     test_id = db.Column(db.String,primary_key=True)
-    question_id=db.Column(db.Integer,primary_key=True)
+    question_id=db.Column(db.String,primary_key=True)
     question = db.Column(db.Text,nullable=False)
     a = db.Column(db.String,nullable=False)
     b = db.Column(db.String,nullable=False)
@@ -45,5 +45,5 @@ class Student(db.Model):
     __tablename__='students'
     name = db.Column(db.String,nullable=False,primary_key=True)
     test_id  = db.Column(db.String,nullable=False,primary_key=True)
-    question_id  = db.Column(db.String,nullable=False) 
+    question_id  = db.Column(db.String,nullable=False,primary_key=True) 
     ans = db.Column(db.String,nullable=False)
