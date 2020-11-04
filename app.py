@@ -371,4 +371,4 @@ def tests_given(username):
 		return render_template('tests_given.html', tests=results)
 	else:
 		flash('You are not authorized', 'danger')
-		return redirect(url_for('dashboard'))
+		return redirect(url_for('home'))
