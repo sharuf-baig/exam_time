@@ -215,7 +215,7 @@ $('#bookmark').on('click', function(e){
 
 
 
-$('#options').on('click', 'td', function(){
+$('#options').on('click', 'button', function(){
     if ($(this).css("background-color") != 'rgba(0, 255, 0, 0.6)') {
         var clicked = $(this).attr('id');
         var que = $('#queid').attr('id');
@@ -236,7 +236,7 @@ $('#finish').on("click", function(e) {
     $('#submit-overlay').empty();
     var count = marked();
     var remaining = nos.length - count;
-    if(cheat>5){
+    if(cheat>5||tab_change>=3){
         finish_test();
     }
     if(submit_overlay_display) {
@@ -272,7 +272,3 @@ var make_array = function() {
         data[parseInt(key)+1].status = SUBMITTED;
     }
 }
-
-window.addEventListener('blur', function() { 
-    // window.location.replace('/home');
- });

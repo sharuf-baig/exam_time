@@ -1,49 +1,53 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<script type="text/javascript"> var answers = "{{answers}}";</script>
+<div  >
+  
+
+<div class="card border-primary mb-3" style="max-width: 20rem;fposition: relative;float: top;">
+  <div class="card-header">Video Feed</div>
+  <div class="card-body">
+    <video id="video" width="180" height="140" autoplay muted style="float: center;"></video>
+  </div>
+    <script type="text/javascript" src={{url_for('static', filename='face-api.min.js')}}></script>
+
+<script type="text/javascript" src={{url_for('static', filename='procto.js')}}>
+
+</script>
+
+</div>
+
+
 <div id="time">{{duration}}</div>
 
-<style>
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
 
-    canvas {
-      position: absolute;
-    }
-  </style>
-<body>
-  <video id="video" width="720" height="560" autoplay muted></video>
-</body>
-<table>
-<table>
-<tr>
-  <td id='queid'>Question No.</td>
-	<td id='mark'>Marks: {{ marks }}</td>
-</tr>
-</table>
-<pre class="prettyprint" id="pretest">
+
+<div class="card bg-light mb-3" style="float: center">
+  <div id='queid' style="float: left;">Question No.</div>
+  <div id='mark' style="float: right">Marks: {{ marks }}</div>
+  
+  <div class="card-body">
+    <pre class="prettyprint" id="pretest">
   <p id="que" style="">{{ q }}</p>
 </pre>
+    </div>
+</div>
+<div class="jumbotron">
+
 
 <table id="options">
-	<tr>
-		<td id='a'>𝐀. {{ a }}</td>
-		<td id='b'>𝐁. {{ b }}</td>
-	</tr>
-	<tr>
-		<td id='c'>𝐂. {{ c }}</td>
-		<td id='d'>𝐃. {{ d }}</td>
-	</tr>
+  <tr class="table-primary">
+      
+      <td id='a'>𝐀. {{ a }}</td>
+      <td id='b'>𝐁. {{ b }}</td>
+    </tr>
+  
+  <tr class="table-primary">
+    <td id='c'>𝐂. {{ c }}</td>
+    <td id='d'>𝐃. {{ d }}</td>
+  </tr>
 </table>
-    
+  </div>  
 <div id="overlay">
   <div class="container" id="question-list">
   </div>
@@ -66,16 +70,12 @@
   </div>
 </footer>
 
-  <script type="text/javascript" src={{url_for('static', filename='face-api.min.js')}}></script>
-
-<script type="text/javascript" src={{url_for('static', filename='procto.js')}}>
-
-</script>
-
-
+</div>
 
 <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='disp.css') }}">
+<link rel= "stylesheet" type= "text/css" href= "
+https://bootswatch.com/4/materia/bootstrap.min.css">
 
 {% endblock %}

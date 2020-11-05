@@ -1,9 +1,17 @@
 
 const video = document.getElementById('video')
-
+var tab_change=0
 
 var det_len=0
 var cheat=0
+document.addEventListener("visibilitychange", event => {
+  if (document.visibilityState == "visible") {
+    alert("If you change tabs another "+(3-tab_change)+" times.. Test will be closed");
+  } else {
+    tab_change=tab_change+1;
+    alert("tab is inactive");
+  }
+})
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('../static/models'),
@@ -33,9 +41,7 @@ video.addEventListener('play', () => {
     det_len=det_len+detections.length
 
     canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
-    faceapi.draw.drawDetections(canvas, resizedDetections)
-    faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
-    faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+    
   }, 500)
   setInterval(async ()=>{
 
