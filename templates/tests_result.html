@@ -24,25 +24,29 @@
 
 {% block body %}
     {% for result in results%}
+
+<div class="card bg-light mb-3" style="float: center">
+  <div id='queid' style="float: left;">Question No. {{loop.index}}</div>
+  <div id='mark' style="float: right">Marks: {{ result.marks }}</div>
+  
+  <div class="card-body">
+    <pre class="prettyprint" id="pretest">
+  <p id="que" style="">{{result['question']}}</p>
+</pre>
+    </div>
+</div>
+
         <table style="margin-bottom: 40px;">
-            <tr>
-                <td>Question No. {{loop.index}}</td>
-                <td>Marks: {{ result.marks }}</td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <pre style="border: 0px;" class="prettyprint" id="que"> {{result['question']}} </pre>
-                </td>
-            </tr>
-            <tr>
+           
+            <tr class="table-primary">
                 {{ show_opt(result,'a') }}
                 {{ show_opt(result,'b') }}
             </tr>
-            <tr>
+            <tr class="table-primary">
                 {{ show_opt(result,'c') }}
                 {{ show_opt(result,'d') }}
             </tr>
-            <tr>
+            <tr class="table-primary">
                 <td colspan="2"><b>Explanation</b>:  {{result.explanation}} </td>
             </tr>
         </table> 
@@ -50,5 +54,8 @@
 
 <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='disp.css') }}">
+
+<link rel= "stylesheet" type= "text/css" href= "
+https://bootswatch.com/4/materia/bootstrap.min.css">
 
 {% endblock %}
