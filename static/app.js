@@ -215,7 +215,7 @@ $('#bookmark').on('click', function(e){
 
 
 
-$('#options').on('click', 'button', function(){
+$('#options').on('click', 'td', function(){
     if ($(this).css("background-color") != 'rgba(0, 255, 0, 0.6)') {
         var clicked = $(this).attr('id');
         var que = $('#queid').attr('id');

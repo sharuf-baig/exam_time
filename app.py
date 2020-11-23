@@ -288,6 +288,7 @@ def test(testid):
 			return redirect(url_for('show_test'))
 	else:
 		flag = request.form['flag']
+
 		if flag == 'get':
 			num = request.form['no']
 			results = T_question.query.filter_by(test_id=testid,question_id=num).first()
@@ -315,8 +316,11 @@ def test(testid):
 			except:
 				pass
 		else:
+
 			temp=StudentTI.query.filter_by(name=name,test_id=testid).first()
 			temp.completed = True
+
+
 			db.session.commit()
 			flash("Test submitted successfully", 'info')
 			return json.dumps({'sql':'fired'})
@@ -383,11 +387,11 @@ def check_result(username, testid):
 			check = results['show_result']
 			if check:
 				results = db2.execute('select explanation,question,a,b,c,d,marks,q.question_id as qid, \
-					q.c_ans as correct, s.ans as marked from tquestions q left join \
-					students s on  s.test_id = q.test_id and s.test_id =:testid \
-					and s.name =:username and s.question_id = q.question_id \
+					q.c_ans as correct, s.ans as marked from tquestions q inner join \
+					students s on  q.test_id = s.test_id where q.question_id=s.question_id and q.test_id =:testid and s.name =:username \
 					group by explanation,question,a,b,c,d,marks,qid,correct,marked\
 					order by q.question_id asc', {'testid':testid,'username':username}).fetchall()
+				
 				if results is not None:
 					return render_template('tests_result.html', results= results,i=0)
 			else:
