@@ -413,8 +413,8 @@ def marks_calc(username,testid):
 			return neg_marks(username,testid) 
 		else:
 			results = db2.execute("select sum(marks) as totalmks from students s,tquestions q where s.name=:name and s.test_id=:testid and s.question_id=q.question_id and s.test_id=q.test_id and s.ans=q.c_ans", {'name':username,'testid':testid}).fetchone()
-			if str(results['totalmks']) == 'None':
-				results['totalmks'] = 0
+			"""if str(results['totalmks']) == 'None':
+				results['totalmks'] = 0"""
 			return results['totalmks']
 
 @app.route('/<username>/tests-created/<testid>', methods = ['POST','GET'])
