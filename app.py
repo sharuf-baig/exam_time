@@ -316,13 +316,10 @@ def test(testid):
 			except:
 				pass
 		else:
-
 			temp=StudentTI.query.filter_by(name=name,test_id=testid).first()
 			temp.completed = True
-
-
 			db.session.commit()
-			flash("Test submitted successfully", 'info')
+			# flash("Test submitted successfully")
 			return json.dumps({'sql':'fired'})
 
 @app.route('/randomize', methods = ['POST'])
