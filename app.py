@@ -329,10 +329,19 @@ def test(testid):
 def random_gen():
 	if request.method == "POST":
 		id = request.form['id']
+		name = session['user']
 		results = T_question.query.filter_by(test_id=id).count()
 		if results is not None:
 			total = results
 			nos = list(range(1,int(total)+1))
+			print(nos)
+			for no in nos:
+				result = Student.query.filter_by(name=name,test_id=id,question_id=str(no)).first()
+				# print('ajfdshlfhsdlkfasNNNNNN')
+				if result is None:
+					temp=Student(name=name,test_id=id,question_id=str(no),ans=' ')
+					db.session.add(temp)	
+			db.session.commit()
 			random.Random(id).shuffle(nos)
 			return json.dumps(nos)
 
