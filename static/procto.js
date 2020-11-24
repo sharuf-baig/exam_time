@@ -11,6 +11,7 @@ document.addEventListener("visibilitychange", event => {
     tab_change=tab_change+1;
     alert("tab is inactive");
   }
+
 })
 
 Promise.all([
@@ -55,7 +56,7 @@ video.addEventListener('play', () => {
       alert("Make sure that no one is around you")
       cheat=cheat+1
     }
-    if(cheat>5){
+    if(cheat>5||tab_change>=2){
       document.getElementById('finish').click();
     }
     
