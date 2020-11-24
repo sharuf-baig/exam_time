@@ -49,7 +49,17 @@ def is_logged(f):
 		if 'user' in session is not None:
 			return f(*args, **kwargs)
 		else:
-			flash('Please login','danger')
+			flash('Please login')
+			return redirect('/')
+	return wrap
+def is_admin(f):
+	@wraps(f)
+	def wrap(*args, **kwargs):
+		result = Admin.query.filter_by(name=session['user']).first()
+		if result is not None:
+			return f(*args, **kwargs)
+		else:
+			flash('Please check with admin')
 			return redirect('/')
 	return wrap
 def doctodict(filepath):
@@ -150,6 +160,7 @@ def logout():
 	return redirect("/")
 @app.route('/create-test', methods = ['GET', 'POST'])
 @is_logged
+@is_admin
 def create_test():
 	form = UploadForm()
 	if request.method == 'POST' and form.validate_on_submit():
@@ -319,7 +330,7 @@ def test(testid):
 			temp=StudentTI.query.filter_by(name=name,test_id=testid).first()
 			temp.completed = True
 			db.session.commit()
-			# flash("Test submitted successfully")
+			flash("Test submitted successfully")
 			return json.dumps({'sql':'fired'})
 
 @app.route('/randomize', methods = ['POST'])
@@ -334,7 +345,6 @@ def random_gen():
 			print(nos)
 			for no in nos:
 				result = Student.query.filter_by(name=name,test_id=id,question_id=str(no)).first()
-				# print('ajfdshlfhsdlkfasNNNNNN')
 				if result is None:
 					temp=Student(name=name,test_id=id,question_id=str(no),ans=' ')
 					db.session.add(temp)	
@@ -408,6 +418,7 @@ def check_result(username, testid):
 
 @app.route('/<username>/tests-created')
 @is_logged
+@is_admin
 def tests_created(username):
 	if username == session['user']:
 		results = db2.execute('select * from test where name = :username', {"username":username}).fetchall()
@@ -429,6 +440,7 @@ def marks_calc(username,testid):
 
 @app.route('/<username>/tests-created/<testid>', methods = ['POST','GET'])
 @is_logged
+@is_admin
 def student_results(username, testid):
 	if username == session['user']:
 		results = db2.execute('select user_details.name as name,test_id from s_testinfo,user_details where test_id = :testid and completed =true and s_testinfo.name=user_details.name ',{"testid":testid}).fetchall()
@@ -456,6 +468,7 @@ def student_results(username, testid):
 
 @app.route('/<username>/tests-created/<testid>/questions', methods = ['POST','GET'])
 @is_logged
+@is_admin
 def questions(username, testid):
 	if username == session['user']:
 		results = db2.execute('SELECT * FROM test where test_id = :testid',{"testid":testid}).fetchall()

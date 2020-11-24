@@ -48,3 +48,8 @@ class Student(db.Model):
     test_id  = db.Column(db.String,nullable=False,primary_key=True)
     question_id  = db.Column(db.String,nullable=False,primary_key=True) 
     ans = db.Column(db.String,nullable=False)
+
+class Admin(db.Model):
+    __tabelname__='admin_user'
+    name =  db.Column(db.String,nullable=False,primary_key=True)
+    admin = db.Column(db.Boolean,default=False)
