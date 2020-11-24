@@ -2,6 +2,8 @@
 
 {% block title %}
 	<link rel="stylesheet" href="/static/dashboard.css">
+	<link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+	
 {% endblock %}
 {%block nav%}
     {% for i in info %}
@@ -9,8 +11,9 @@
     {%endfor%}
 {%endblock%}
 {% block body %}
-
+	
    <h1 align="center">Welcome {{session.user|upper}}</h1>
+<a href="/logout" ><button type="button" style="float: right;"class="btn btn-warning">Logout</button></a>
   <div class="row mysec" id="student-section">
 	 	<div class="col-6 ">
 			<img src="static/undraw_student.svg" alt="" width="280px">
