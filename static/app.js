@@ -23,6 +23,7 @@ $(document).ready( function() {
             data : {id: list[list.length-1]},
             success: function(temp) {
                 nos = temp;
+                
                 display_ques(1);
                 make_array();
             }
@@ -39,6 +40,9 @@ var unmark_all = function() {
     {
         $(this).css("background-color",'rgba(0, 0, 0, 0)');
     });
+}
+var inittable = function(){
+
 }
 
 var display_ques = function(move) {
@@ -230,7 +234,14 @@ $('#options').on('click', 'td', function(){
         data[curr+1].marked = null;
     }
 });
+$('#clr').on('click', function(e){
+    
+        unmark_all();
+        data[curr+1].status = NOT_MARKED;
+        data[curr+1].marked = null;
+    
 
+});
 var submit_overlay_display = true;
 $('#finish').on("click", function(e) {
     $('#submit-overlay').empty();
@@ -272,3 +283,4 @@ var make_array = function() {
         data[parseInt(key)+1].status = SUBMITTED;
     }
 }
+session.pop('_flashes', None)
