@@ -1,0 +1,37 @@
+# =======================
+# Domestic animal breeds.
+# =======================
+
+max_length = 13
+
+# Cattle
+longhorn
+
+# Dogs
+akita
+beagle
+bloodhound
+bulldog
+chihuahua
+collie
+corgi
+dalmatian
+doberman
+husky
+labradoodle
+labrador
+mastiff
+malamute
+mongrel
+poodle
+rottweiler
+spaniel
+terrier
+
+# Horses & Hybrids
+mule
+mustang
+pony
+
+# Rabbits
+angora
