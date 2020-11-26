@@ -376,9 +376,9 @@ def totmarks(username,tests):
 
 		else:
 			results = db2.execute("select sum(marks) as totalmks from students s,tquestions q where s.name=:name and s.test_id=:testid and s.question_id=q.question_id and s.test_id=q.test_id and s.ans=q.c_ans",{"name":username,"testid":testid}).fetchone()	
-			if str(results.totalmks) == 'None':
-				results.totalmks = 0
-			d['marks'] = results.totalmks
+			# if str(results.totalmks) == 'None':
+			# 	results.totalmks = 0
+			# d['marks'] = results.totalmks
 		temp.append(d)
 	print(temp)	
 	return temp
@@ -389,7 +389,10 @@ def tests_given(username):
 	if username == session['user']:
 		results = db2.execute('select distinct(students.test_id),subject,topic from students,test where students.name = :name and students.test_id=test.test_id',{"name":username}).fetchall()
 		results=totmarks(username,results)
-		return render_template('tests_given.html', tests=results)
+		email = User.query.filter_by(name=username).first()
+		print(email)
+		
+		return render_template('tests_given.html', tests=results,user=username,email=email.email,info=['home','logout'])
 	else:
 		flash('You are not authorized', 'danger')
 		return redirect(url_for('home'))

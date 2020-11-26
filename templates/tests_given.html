@@ -1,6 +1,9 @@
 {% extends 'default.html' %}
 {% block title %}
 <style type="text/css">
+	*{
+		margin: 0%;
+	}
 	td,th {
 		padding: 10px;
 		text-align: center;
@@ -10,9 +13,41 @@
 		background-color: #343a40;
 		border-color: #454d55;
 		}
+	.profile-header {
+		transform: translateY(5rem);
+	}	
+	footer{
+		position: fixed !important;
+		left: 0 !important;
+		bottom: 0 !important;
+	}
 </style>
 {%endblock%}
+{%block nav%}
+	{% for i in info %}
+	<li><a href="{{url_for(i)}}">{{i}}</a></li>
+	{%endfor%}
+{%endblock%}
 {%block body %}
+<div class="bg-white shadow rounded overflow-hidden">
+	<div class="px-4 pt-0 pb-4 bg-dark">
+		<div class="media align-items-center profile-header">
+			<div class="profile mr-3"><img src="https://d19m59y37dris4.cloudfront.net/university/1-1-1/img/teacher-4.jpg" alt="..." width="130" class="rounded mb-2 img-thumbnail"></div>
+			<div class="media-body mb-5 text-white">
+				<h4 class="mt-0 mb-0">{{user}}</h4>
+				<p class="small mb-4"> <i class="fa fa-map-marker mr-2"></i>India</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="bg-light p-4 d-flex justify-content-end text-center">
+		<ul class="list-inline mb-0">
+			<li class="list-inline-item">
+				<h5 class="font-weight-bold mb-0 d-block">{{email}}</h5>
+			</li>
+		</ul>
+	</div>
+</div>
 <table class="table" width="70%" align="center">
 	<thead class="thead-dark">
 			<td scope="col">Test ID</td>
