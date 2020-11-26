@@ -1,12 +1,28 @@
-{% extends 'default.html' %}
+{% extends 'layout.html' %}
 
-{% block title %}
+{% block head %}
   <link rel="stylesheet" href="https://bootswatch.com/4/lumen/bootstrap.min.css">
+  <style>
+    body{
+      background-image: url('../static/im.jpg');
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+
+    }
+    .jumbotron{
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      background-image: url('../static/im.jpg');
+      background-attachment: fixed;
+      background-position: center;
+      background-size: cover;
+    }
+  </style>
 {% endblock %}
 
 {% block body %}
 
-  <h1 align="center">Welcome {{session.user|upper}}</h1>
+  <h1 align="center">Welcome {{session.user|title}}</h1>
  
 
 <div class="jumbotron">
@@ -23,11 +39,7 @@
     </tr>
   </thead>
   <tbody>
-    
-  
-
-
-    <{% for test in tests %}
+    {% for test in tests %}
                 <tr>
                     <td>{{test['subject']}}</td>
                     <td>{{test['topic']}}</td>

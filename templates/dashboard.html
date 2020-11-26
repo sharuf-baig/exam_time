@@ -7,12 +7,12 @@
 {% endblock %}
 {%block nav%}
     {% for i in info %}
-    <li><a href="">{{i}}</a></li>
+    <li><a href="{{url_for(i)}}">{{i|upper}}</a></li>
     {%endfor%}
 {%endblock%}
 {% block body %}
 	
-   <h1 align="center">Welcome {{session.user|upper}}</h1>
+   <h1 align="center" class="head">Welcome {{session.user|title}}</h1>
 <a href="/logout" ><button type="button" style="float: right;"class="btn btn-warning">Logout</button></a>
   <div class="row mysec" id="student-section">
 	 	<div class="col-6 ">

@@ -1,4 +1,21 @@
-{% extends 'layout.html' %}
+{% extends 'default.html' %}
+{%block title%}
+<style>
+    footer{
+		position: fixed !important;
+		left: 0 !important;
+		bottom: 0 !important;
+    }
+    .toggle{
+		background: transparent !important;
+	}
+</style>
+{%endblock%}
+{%block nav%}
+{% for i in info %}
+    <li><a href="{{url_for(i)}}">{{i}}</a></li>
+{%endfor%}
+{%endblock%}
 {% block body %}
     <table class="table">
         <thead class="thead-dark">

@@ -11,6 +11,9 @@ img {
 	border-radius: 7%;
 }
 */
+.head{
+	text-shadow: 0 0 3px #FF0000;
+}
 .mysec img{
 	margin: 0 auto;
 	display: block;

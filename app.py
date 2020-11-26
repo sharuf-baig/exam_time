@@ -152,7 +152,7 @@ def register():
 @app.route("/home",methods=["GET","POST"])
 @is_logged
 def home():
-	return render_template('dashboard.html',info=['Give Test','Results','Student Results','Create Test'])            
+	return render_template('dashboard.html',info=['show_test','create_test','logout'])            
 @app.route("/logout")
 @is_logged
 def logout():
@@ -425,7 +425,7 @@ def check_result(username, testid):
 def tests_created(username):
 	if username == session['user']:
 		results = db2.execute('select * from test where name = :username', {"username":username}).fetchall()
-		return render_template('tests_created.html', tests=results)
+		return render_template('tests_created.html', tests=results,info=['home','logout'])
 	else:
 		flash('You are not authorized', 'danger')
 		return redirect(url_for('home'))

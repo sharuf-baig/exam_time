@@ -1,6 +1,15 @@
-{% extends 'default.html' %}
-{% block title %}
+{% extends 'layout.html' %}
+{% block head %}
   <link rel="stylesheet" href="/static/create_test.css">
+  <style>
+  body{
+    background-image: url('../static/im.jpg');
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+
+  }
+</style>
 {% endblock %}
 {% block body %}
 {% from "_formhelpers.html" import render_field %}
