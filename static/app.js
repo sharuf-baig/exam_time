@@ -31,7 +31,7 @@ $(document).ready( function() {
     }
     var time = parseInt($('#time').text()), display = $('#time');
     startTimer(time, display);
-    sendTime();
+    
     flag_time = true;
 })
 
@@ -79,28 +79,68 @@ var display_ques = function(move) {
         
     }
 }
+
 var flag_time = true;
-function startTimer(duration, display) {
-    var timer = duration,hours, minutes, seconds;
-    
-    var interval = setInterval(function () {
-        hours = parseInt(timer / 3600 ,10);
-        minutes = parseInt((timer%3600) / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-        hours = hours < 10 ? "0" + hours : hours;
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
+var hours=0;
+var minutes=0;
+var seconds=0;
+  function startTimer(duration, display) {
+    var timer = duration,hours,minutes, seconds;
+    setInterval(function() {
+      hours = parseInt(timer / 3600, 10);
+      minutes = parseInt((timer%3600) / 3600, 10);
+      seconds = parseInt(timer % 60, 10);
 
-        display.text(hours + ":" + minutes + ":" + seconds);
+      hours = hours < 10 ? "0" + hours : hours;
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        if (--timer < 0) {
-            finish_test();
-            clearInterval(interval);
-            flag_time = false;
-        }
+      display.textContent = hours + ":" + minutes + ":" + seconds;
+      setCookie("hours", hours.toString(), 1);
+      setCookie("minutes", minutes.toString(), 1);
+      setCookie("seconds", seconds.toString(), 1);
+
+      if (--timer < 0) {
+        timer = 0;
+      }
     }, 1000);
-}
+  }
 
+
+  window.onload = function() {
+     var hours_data =  getCookie("hours");
+     var minutes_data = getCookie("minutes");
+     var seconds_data = getCookie("seconds");
+     var timer_amount = (60*10); //default
+      if (!minutes_data || !seconds_data){
+        //no cookie found use default
+      }
+      else{
+        timer_amount = parseInt(hours_data-3600)+parseInt(minutes_data*60)+parseInt(seconds_data)
+      }
+
+    var fiveMinutes = timer_amount,
+        display = document.querySelector('#time');
+    startTimer(fiveMinutes, display); //`enter code here`
+  };
+
+   function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+   } 
+
+   function getCookie(cname) {
+   var name = cname + "=";
+   var ca = document.cookie.split(';');
+   for(var i=0; i<ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1);
+      if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+   }
+   return "";
+  } 
 function finish_test() {
     $('#msg').addClass('alert-info');
     $('#msg').append("Test submitted successfully");
