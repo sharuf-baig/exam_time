@@ -219,8 +219,18 @@ def give_test():
 	name=session['user']
 	form = TestForm(request.form)
 	val = request.args.get('val', None)
+	results = Test.query.filter_by(test_id=val).first()
+	new=results
+	duration1=new.duration
+	start1=str(new.start)
+	end1=str(new.end)
+	neg1=new.neg
+	data1={'duration': duration1,'negmarks':neg1,'start':start1,'end':end1}
+	
 	if request.method == 'POST' and form.validate():
 		test_id = val
+		
+		print(results)
 		if test_id is None:
 			return redirect(url_for('show_test'))
 		password_candidate = form.password.data
@@ -284,7 +294,7 @@ def give_test():
 				return redirect(url_for('give_test',val=val))
 		flash('Invalid testid', 'danger')
 		return redirect(url_for('give_test',val=val))
-	return render_template('give_test.html', form = form)
+	return render_template('give_test.html', form = form,data=data1)
 
 @app.route('/give-test/<testid>', methods=['GET','POST'])
 @is_logged
@@ -387,10 +397,10 @@ def totmarks(username,tests):
 @is_logged
 def tests_given(username):
 	if username == session['user']:
-		results = db2.execute('select distinct(students.test_id),subject,topic from students,test where students.name = :name and students.test_id=test.test_id',{"name":username}).fetchall()
+		results = db2.execute('select distinct(s_testinfo.test_id),subject,topic from s_testinfo,test where s_testinfo.name = :name and s_testinfo.test_id=test.test_id',{"name":username}).fetchall()
 		results=totmarks(username,results)
 		email = User.query.filter_by(name=username).first()
-		print(email)
+		
 		
 		return render_template('tests_given.html', tests=results,user=username,email=email.email,info=['home','logout'])
 	else:

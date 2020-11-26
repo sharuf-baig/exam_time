@@ -2,6 +2,7 @@
 
 {% block head %}
   <link rel="stylesheet" href="static/give_test.css">
+  <link rel="stylesheet" href="https://bootswatch.com/4/lumen/bootstrap.min.css">
   <style>
     body{
     background: #ADA996;  /* fallback for old browsers */
@@ -10,6 +11,7 @@
     ;
     }
   </style>
+  
 {% endblock %}
 
 {% block body %}
@@ -27,5 +29,33 @@
     </div>
     <p><input type="submit" class="btn btn-primary" id="submit" value="Submit"></p>
   </form>
+ 
 </div>
+
+<div style="padding: 5%">
+ <div class="card text-white bg-info mb-3" >
+<div class="card-header">General Insctructions</div>
+ <div class="card-body">
+
+  <ol  >
+    
+      <li>Please make sure you Enter full screen mode before attempting the test otherwise you won't be able to see the questions</li>
+      <li style="align-self: left">Use F11 to enter full screen</li>
+      <li >Duration of the test is {{data['duration']}} </li>
+      <li>Marks for each question is {{data['marks']}}</li>
+      <li>negative marks are {{data['negmarks']}}</li>
+      <li>Start time is {{data['start']}}</li>
+      <li>End time is {{data['end']}}</li>
+    
+    
+
+
+  </ol>
+  
+
+ </div>
+</div>
+</div>
+</div>
+
 {% endblock %}

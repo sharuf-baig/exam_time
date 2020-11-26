@@ -30,7 +30,7 @@ function startVideo() {
 }
 
 function isfullscreen(){
-  return window.innerHeight == screen.height && window.innerWidth == screen.width;
+  return window.innerHeight == screen.height;
 }
 document.addEventListener("fullscreenChange", function () {
           
@@ -75,11 +75,11 @@ video.addEventListener('play', () => {
 
           }else{
             fullscreen=0
-
+            window.location.reload()
             
           }
     console.log(fullscreen)
-  },1000)
+  },6000)
 
 })
 
