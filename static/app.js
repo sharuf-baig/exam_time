@@ -44,8 +44,16 @@ var unmark_all = function() {
 var inittable = function(){
 
 }
+$(document).keyup(function(e){
+   if(e.which==122){
+       e.preventDefault();
+       window.location.reload(); 
+       return false;
+   }
+});
 
 var display_ques = function(move) {
+    if(fullscreen==1){
     unmark_all();
     $.ajax({
         type: "POST",
@@ -65,7 +73,11 @@ var display_ques = function(move) {
         error: function(error){
             console.log("Here is the error res: " + JSON.stringify(error));
         }
-    });
+    });}
+    else{
+        alert('Please enter fullscreen mode by pressing F11 to view questions');
+        
+    }
 }
 var flag_time = true;
 function startTimer(duration, display) {
@@ -283,4 +295,4 @@ var make_array = function() {
         data[parseInt(key)+1].status = SUBMITTED;
     }
 }
-session.pop('_flashes', None)
+session.pop('_flashes', None);
