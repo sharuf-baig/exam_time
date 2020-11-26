@@ -1,7 +1,7 @@
 
 const video = document.getElementById('video')
 var tab_change=0
-
+var fullscreen=0
 var det_len=0
 var cheat=0
 document.addEventListener("visibilitychange", event => {
@@ -29,6 +29,12 @@ function startVideo() {
   )
 }
 
+function isfullscreen(){
+  return window.innerHeight == screen.height && window.innerWidth == screen.width;
+}
+document.addEventListener("fullscreenChange", function () {
+          
+      });
 video.addEventListener('play', () => {
  
   const canvas = faceapi.createCanvasFromMedia(video)
@@ -62,31 +68,18 @@ video.addEventListener('play', () => {
     
     det_len=0
   },10000)
+  setInterval(async ()=>{
+    if( isfullscreen() == true) {
+            fullscreen=1
+            
+
+          }else{
+            fullscreen=0
+
+            
+          }
+    console.log(fullscreen)
+  },1000)
 
 })
-document.addEventListener("keyup", function (e) {
-    var keyCode = e.keyCode ? e.keyCode : e.which;
-            if (keyCode == 44) {
-                stopPrntScr();
-            }
-        });
-function stopPrntScr() {
 
-            var inpFld = document.createElement("input");
-            inpFld.setAttribute("value", ".");
-            inpFld.setAttribute("width", "0");
-            inpFld.style.height = "0px";
-            inpFld.style.width = "0px";
-            inpFld.style.border = "0px";
-            document.body.appendChild(inpFld);
-            inpFld.select();
-            document.execCommand("copy");
-            inpFld.remove(inpFld);
-        }
-       function AccessClipboardData() {
-            try {
-                window.clipboardData.setData('text', "Access   Restricted");
-            } catch (err) {
-            }
-        }
-        setInterval("AccessClipboardData()", 300);
