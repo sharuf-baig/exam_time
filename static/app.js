@@ -52,6 +52,17 @@ $(document).keyup(function(e){
        return false;
    }
 });
+function tempAlert(msg,duration)
+{
+ var el = document.createElement("div");
+ el.setAttribute("class","alert alert-danger");
+ el.setAttribute("style","position:fixed; top: 0px; left: 0px; width: 100%;z-index:9999; border-radius:0px;")
+ el.innerHTML = msg;
+ setTimeout(function(){
+  el.parentNode.removeChild(el);
+ },duration);
+ document.body.appendChild(el);
+}
 
 var display_ques = function(move) {
     if(fullscreen==1){
@@ -76,7 +87,7 @@ var display_ques = function(move) {
         }
     });}
     else{
-        alert('Please enter fullscreen mode by pressing F11 to view questions');
+        tempAlert('Please enter fullscreen mode by pressing F11 to view questions',3000);
         
     }
 }

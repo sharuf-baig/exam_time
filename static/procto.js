@@ -6,10 +6,10 @@ var det_len=0
 var cheat=0
 document.addEventListener("visibilitychange", event => {
   if (document.visibilityState == "visible") {
-    alert("If you change tabs another "+(3-tab_change)+" times.. Test will be closed");
+    tempAlert("If you change tabs another "+(5-tab_change)+" times.. Test will be closed",3000);
   } else {
     tab_change=tab_change+1;
-    alert("tab is inactive");
+    tempAlert("tab is inactive",3000);
   }
 
 })
@@ -54,15 +54,15 @@ video.addEventListener('play', () => {
 
     
     if(det_len<10){
-      alert("Make sure that your face is visible")
+      tempAlert("Make sure that your face is visible",4000)
       cheat=cheat+1
 
     }
     if(det_len>25){
-      alert("Make sure that no one is around you")
+      tempAlert("Make sure that no one is around you",4000)
       cheat=cheat+1
     }
-    if(cheat>5||tab_change>=2){
+    if(cheat>10||tab_change>=3){
       document.getElementById('finish').click();
     }
     
