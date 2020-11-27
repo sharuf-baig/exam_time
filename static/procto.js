@@ -1,7 +1,7 @@
 
 const video = document.getElementById('video')
 var tab_change=0
-var fullscreen=0
+var fullscreen=1
 var det_len=0
 var cheat=0
 document.addEventListener("visibilitychange", event => {
@@ -75,11 +75,11 @@ video.addEventListener('play', () => {
 
           }else{
             fullscreen=0
-            window.location.reload()
+            
             
           }
     console.log(fullscreen)
-  },6000)
+  },5000)
 
 })
 

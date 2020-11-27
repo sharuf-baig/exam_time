@@ -12,6 +12,7 @@ window.onbeforeunload = function() {
     return "Dude, are you sure you want to leave?!";
 }
 
+
 $(document).ready( function() {
     var url = window.location.href;
     var list = url.split('/');
@@ -31,7 +32,7 @@ $(document).ready( function() {
     }
     var time = parseInt($('#time').text()), display = $('#time');
     startTimer(time, display);
-    sendTime();
+    
     flag_time = true;
 })
 
@@ -177,17 +178,19 @@ function sendTime() {
     }, 5000);
 }
 $(document).on('click', '#next', function(e){
+    if(curr<nos.length-1){
     e.preventDefault();
     curr += 1;
-    display_ques(curr+1);
+    display_ques(curr+1);}
     
 });
 
 $(document).on('click', '#prev', function(e){
+    if(curr>0){
     e.preventDefault();
     curr -= 1;
     display_ques(curr+1);
-    
+    }
 });
 
 $('#submit').on('click', function(e){
@@ -216,7 +219,8 @@ $('#submit').on('click', function(e){
             console.log("Here is the error res: " + JSON.stringify(error));
         }
     });
-    $('#next').trigger('click');
+    if(curr<nos.length-1){
+    $('#next').trigger('click');}
 });
 
 function onn() {
