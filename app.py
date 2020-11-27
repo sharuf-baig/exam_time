@@ -364,7 +364,6 @@ def random_gen():
 
 def neg_marks(username,testid):
 	results =  db2.execute("select marks,q.question_id as qid,q.c_ans as correct, s.ans as marked from tquestions q left join students s on  s.test_id = q.test_id and s.test_id = :testid and s.name = :username and s.question_id = q.question_id group by qid,correct,marked,marks order by q.question_id asc",{"testid":testid,"username":username}).fetchall()
-	data=results
 	sum=0.0
 	for i in results:
 		if(str(i.marked) is not None):
@@ -373,6 +372,14 @@ def neg_marks(username,testid):
 			elif(str(i.marked).upper() == str(i.correct)):
 				sum+=int(i.marks)
 	return sum
+def pos_marks(username,testid):
+	results =  db2.execute("select marks,q.question_id as qid,q.c_ans as correct, s.ans as marked from tquestions q left join students s on  s.test_id = q.test_id and s.test_id = :testid and s.name = :username and s.question_id = q.question_id group by qid,correct,marked,marks order by q.question_id asc",{"testid":testid,"username":username}).fetchall()
+	sum=0.0
+	for i in results:
+		if(str(i.marked) is not None):
+			if(str(i.marked).upper() == str(i.correct)):
+				sum+=int(i.marks)
+	return sum	
 
 def totmarks(username,tests): 
 	temp = []
@@ -380,15 +387,11 @@ def totmarks(username,tests):
 		testid = test['test_id']
 		d = dict(test.items())
 		results=db2.execute("select neg from test where test_id=:testid",{"testid":testid}).fetchone()
-		# print(f"res =={results['neg']}")
 		if results['neg']:
 			d['marks'] = neg_marks(username,testid) 
 
 		else:
-			results = db2.execute("select sum(marks) as totalmks from students s,tquestions q where s.name=:name and s.test_id=:testid and s.question_id=q.question_id and s.test_id=q.test_id and s.ans=q.c_ans",{"name":username,"testid":testid}).fetchone()	
-			# if str(results.totalmks) == 'None':
-			# 	results.totalmks = 0
-			# d['marks'] = results.totalmks
+			d['marks'] = pos_marks(username,testid) 
 		temp.append(d)
 	print(temp)	
 	return temp
@@ -400,8 +403,6 @@ def tests_given(username):
 		results = db2.execute('select distinct(s_testinfo.test_id),subject,topic from s_testinfo,test where s_testinfo.name = :name and s_testinfo.test_id=test.test_id',{"name":username}).fetchall()
 		results=totmarks(username,results)
 		email = User.query.filter_by(name=username).first()
-		
-		
 		return render_template('tests_given.html', tests=results,user=username,email=email.email,info=['home','logout'])
 	else:
 		flash('You are not authorized', 'danger')
@@ -441,15 +442,10 @@ def tests_created(username):
 		return redirect(url_for('home'))
 
 def marks_calc(username,testid):
-	if username == session['user']:
-		results=db2.execute("select neg from test where test_id=:testid",{"testid":testid}).fetchone()
-		if results['neg']:
-			return neg_marks(username,testid) 
-		else:
-			results = db2.execute("select sum(marks) as totalmks from students s,tquestions q where s.name=:name and s.test_id=:testid and s.question_id=q.question_id and s.test_id=q.test_id and s.ans=q.c_ans", {'name':username,'testid':testid}).fetchone()
-			"""if str(results['totalmks']) == 'None':
-				results['totalmks'] = 0"""
-			return results['totalmks']
+	results=db2.execute("select neg from test where test_id=:testid",{"testid":testid}).fetchone()
+	if results['neg']:
+		return neg_marks(username,testid) 
+	return pos_marks(username,testid) 
 
 @app.route('/<username>/tests-created/<testid>', methods = ['POST','GET'])
 @is_logged
@@ -472,12 +468,14 @@ def student_results(username, testid):
 			results = temp
 			return render_template('student_results.html', data=results)
 		else:
+			print(final)
 			fields = ['Sr No', 'Name', 'Marks']
 			with open('static/' + testid + '.csv', 'w') as f:
 				writer = csv.writer(f)
 				writer.writerow(fields)
-				writer.writerows(final)
-			return send_file('/static/' + testid + '.csv', as_attachment=True)
+				for row in final:
+					writer.writerow(row)
+			return send_file('static/' + testid + '.csv', as_attachment=True)
 
 @app.route('/<username>/tests-created/<testid>/questions', methods = ['POST','GET'])
 @is_logged
